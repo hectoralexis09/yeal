@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sistema de Citas</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+
+            background: #e6fffb;
+
+            min-height: 100vh;
+
+        }
+
+
+        /* =========================
+           PANTALLAS
+        ========================= */
+
+        .pantalla {
+
+            display: none;
+
+            min-height: 100vh;
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+        }
+
+
+        .pantalla.activa {
+
+            display: flex;
+
+        }
+
+
+        /* =========================
+           TARJETAS
+        ========================= */
+
+        .tarjeta {
+
+            background: white;
+
+            width: 100%;
+
+            max-width: 1000px;
+
+            padding: 35px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0, 128, 128, 0.20);
+
+            border-top:
+                6px solid #14b8a6;
+
+        }
+
+
+        .login {
+
+            max-width: 400px;
+
+            text-align: center;
+
+        }
+
+
+        /* =========================
+           TITULOS
+        ========================= */
+
+        h1 {
+
+            color: #0f766e;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        h2 {
+
+            color: #115e59;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        p {
+
+            color: #475569;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        /* =========================
+           CAMPOS
+        ========================= */
+
+        .campo {
+
+            display: flex;
+
+            flex-direction: column;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .campo label {
+
+            color: #134e4a;
+
+            font-weight: bold;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .campo input,
+        .campo textarea {
+
+            padding: 12px;
+
+            border:
+                1px solid #99f6e4;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+
+        }
+
+
+        .campo input:focus,
+        .campo textarea:focus {
+
+            border-color: #14b8a6;
+
+            box-shadow:
+                0 0 5px
+                rgba(20,184,166,0.3);
+
+        }
+
+
+        textarea {
+
+            min-height: 90px;
+
+            resize: vertical;
+
+        }
+
+
+        /* =========================
+           FORMULARIO
+        ========================= */
+
+        .formulario {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+
+        }
+
+
+        .completo {
+
+            grid-column:
+                1 / 3;
+
+        }
+
+
+        /* =========================
+           BOTONES
+        ========================= */
+
+        button {
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 13px 20px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 15px;
+
+        }
+
+
+        .btn {
+
+            background: #14b8a6;
+
+            color: white;
+
+            width: 100%;
+
+        }
+
+
+        .btn:hover {
+
+            background: #0f766e;
+
+        }
+
+
+        .btn-secundario {
+
+            background: #0f766e;
+
+            color: white;
+
+            margin-top: 15px;
+
+        }
+
+
+        .btn-salir {
+
+            background: #ef4444;
+
+            color: white;
+
+            float: right;
+
+        }
+
+
+        .btn-salir:hover {
+
+            background: #dc2626;
+
+        }
+
+
+        /* =========================
+           MENSAJES
+        ========================= */
+
+        .mensaje {
+
+            margin-top: 15px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================
+           TABLA
+        ========================= */
+
+        .tabla {
+
+            width: 100%;
+
+            overflow-x: auto;
+
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            margin-top: 20px;
+
+        }
+
+
+        th,
+        td {
+
+            border:
+                1px solid #99f6e4;
+
+            padding: 10px;
+
+            text-align: left;
+
+        }
+
+
+        th {
+
+            background: #0f766e;
+
+            color: white;
+
+        }
+
+
+        tr:nth-child(even) {
+
+            background: #f0fdfa;
+
+        }
+
+
+        .sin-citas {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: #64748b;
+
+        }
+
+
+        /* =========================
+           CELULAR
+        ========================= */
+
+        @media(max-width: 700px) {
+
+            .formulario {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .completo {
+
+                grid-column: 1;
+
+            }
+
+
+            .btn-salir {
+
+                float: none;
+
+                width: 100%;
+
+                margin-bottom: 20px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+
+<!-- ==================================
+     PANTALLA 1
+     INICIO DE SESIÓN
+================================== -->
+
+<section
+    id="pantalla1"
+    class="pantalla activa">
+
+
+    <div
+        class="tarjeta login">
+
+
+        <h1>
+            🔐 Inicio de sesión
+        </h1>
+
+
+        <p>
+            Sistema de registro de citas
+        </p>
+
+
+        <form id="formLogin">
+
+
+            <div class="campo">
+
+                <label>
+                    Administrador
+                </label>
+
+                <input
+                    type="text"
+                    id="admin"
+                    placeholder="Ingrese su administrador"
+                    required>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label>
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Ingrese su contraseña"
+                    required>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn">
+
+                Iniciar sesión
+
+            </button>
+
+
+            <p
+                id="mensajeLogin"
+                class="mensaje">
+            </p>
+
+
+        </form>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     PANTALLA 2
+     REGISTRAR CITA
+================================== -->
+
+<section
+    id="pantalla2"
+    class="pantalla">
+
+
+    <div class="tarjeta">
+
+
+        <button
+            class="btn-salir"
+            onclick="cerrarSesion()">
+
+            Cerrar sesión
+
+        </button>
+
+
+        <h1>
+            📝 Registrar cita
+        </h1>
+
+
+        <p>
+            Ingresa los datos de la cita.
+        </p>
+
+
+        <form
+            id="formCita"
+            class="formulario">
+
+
+            <!-- NOMBRE -->
+
+            <div class="campo">
+
+                <label>
+                    Nombre
+                </label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    required>
+
+            </div>
+
+
+            <!-- CORREO -->
+
+            <div class="campo">
+
+                <label>
+                    Correo electrónico
+                </label>
+
+                <input
+                    type="email"
+                    id="correo"
+                    required>
+
+            </div>
+
+
+            <!-- ESPECIALIDAD -->
+
+            <div class="campo">
+
+                <label>
+                    Especialidad
+                </label>
+
+                <input
+                    type="text"
+                    id="especialidad"
+                    required>
+
+            </div>
+
+
+            <!-- GRUPO -->
+
+            <div class="campo">
+
+                <label>
+                    Grupo
+                </label>
+
+                <input
+                    type="text"
+                    id="grupo"
+                    required>
+
+            </div>
+
+
+            <!-- MOTIVO -->
+
+            <div class="campo completo">
+
+                <label>
+                    Motivo de la cita
+                </label>
+
+                <textarea
+                    id="motivo"
+                    required>
+                </textarea>
+
+            </div>
+
+
+            <!-- FECHA -->
+
+            <div class="campo">
+
+                <label>
+                    Fecha
+                </label>
+
+                <input
+                    type="date"
+                    id="fecha"
+                    required>
+
+            </div>
+
+
+            <!-- HORA -->
+
+            <div class="campo">
+
+                <label>
+                    Hora
+                </label>
+
+                <input
+                    type="time"
+                    id="hora"
+                    required>
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <div class="campo completo">
+
+                <button
+                    type="submit"
+                    class="btn">
+
+                    Registrar cita
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ==================================
+     PANTALLA 3
+     CITAS REGISTRADAS
+================================== -->
+
+<section
+    id="pantalla3"
+    class="pantalla">
+
+
+    <div class="tarjeta">
+
+
+        <button
+            class="btn-salir"
+            onclick="cerrarSesion()">
+
+            Cerrar sesión
+
+        </button>
+
+
+        <h1>
+            📋 Citas Registradas
+        </h1>
+
+
+        <p>
+            A continuación aparecen todas
+            las citas registradas.
+        </p>
+
+
+        <div class="tabla">
+
+
+            <table>
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Nombre
+                        </th>
+
+                        <th>
+                            Correo
+                        </th>
+
+                        <th>
+                            Especialidad
+                        </th>
+
+                        <th>
+                            Grupo
+                        </th>
+
+                        <th>
+                            Motivo
+                        </th>
+
+                        <th>
+                            Fecha
+                        </th>
+
+                        <th>
+                            Hora
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="listaCitas">
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+        <button
+            class="btn-secundario"
+            onclick="irARegistrar()">
+
+            Registrar otra cita
+
+        </button>
+
+
+    </div>
+
+</section>
+
+
+
+<script>
+
+
+// ==================================
+// DATOS DEL ADMINISTRADOR
+// ==================================
+
+const ADMIN =
+    "yael";
+
+const PASSWORD =
+    "1234";
+
+
+
+// ==================================
+// FUNCIÓN PARA CAMBIAR PANTALLA
+// ==================================
+
+function mostrarPantalla(numero) {
+
+
+    document
+        .querySelectorAll(".pantalla")
+        .forEach(function(pantalla) {
+
+            pantalla.classList.remove(
+                "activa"
+            );
+
+        });
+
+
+    document
+        .getElementById(
+            "pantalla" + numero
+        )
+        .classList.add("activa");
+
+}
+
+
+
+// ==================================
+// PANTALLA 1
+// INICIAR SESIÓN
+// ==================================
+
+document
+    .getElementById("formLogin")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+
+            event.preventDefault();
+
+
+            const admin =
+                document
+                    .getElementById("admin")
+                    .value;
+
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            const mensaje =
+                document
+                    .getElementById(
+                        "mensajeLogin"
+                    );
+
+
+            // COMPROBAR DATOS
+
+            if (
+                admin === ADMIN &&
+                password === PASSWORD
+            ) {
+
+
+                mensaje.style.color =
+                    "#0f766e";
+
+
+                mensaje.textContent =
+                    "Inicio de sesión correcto.";
+
+
+                setTimeout(
+                    function() {
+
+                        mostrarPantalla(2);
+
+                    },
+                    500
+                );
+
+
+            } else {
+
+
+                mensaje.style.color =
+                    "#ef4444";
+
+
+                mensaje.textContent =
+                    "Administrador o contraseña incorrectos.";
+
+            }
+
+        }
+    );
+
+
+
+// ==================================
+// PANTALLA 2
+// REGISTRAR CITA
+// ==================================
+
+document
+    .getElementById("formCita")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+
+            event.preventDefault();
+
+
+            // CREAR CITA
+
+            const cita = {
+
+
+                nombre:
+                    document
+                        .getElementById(
+                            "nombre"
+                        )
+                        .value,
+
+
+                correo:
+                    document
+                        .getElementById(
+                            "correo"
+                        )
+                        .value,
+
+
+                especialidad:
+                    document
+                        .getElementById(
+                            "especialidad"
+                        )
+                        .value,
+
+
+                grupo:
+                    document
+                        .getElementById(
+                            "grupo"
+                        )
+                        .value,
+
+
+                motivo:
+                    document
+                        .getElementById(
+                            "motivo"
+                        )
+                        .value,
+
+
+                fecha:
+                    document
+                        .getElementById(
+                            "fecha"
+                        )
+                        .value,
+
+
+                hora:
+                    document
+                        .getElementById(
+                            "hora"
+                        )
+                        .value
+
+            };
+
+
+            // OBTENER CITAS EXISTENTES
+
+            let citas =
+                JSON.parse(
+                    localStorage.getItem(
+                        "citas"
+                    )
+                ) || [];
+
+
+            // AGREGAR NUEVA CITA
+
+            citas.push(cita);
+
+
+            // GUARDAR CITAS
+
+            localStorage.setItem(
+                "citas",
+                JSON.stringify(citas)
+            );
+
+
+            // LIMPIAR FORMULARIO
+
+            document
+                .getElementById(
+                    "formCita"
+                )
+                .reset();
+
+
+            // MOSTRAR CITAS
+
+            mostrarCitas();
+
+
+            // IR A PANTALLA 3
+
+            mostrarPantalla(3);
+
+        }
+    );
+
+
+
+// ==================================
+// MOSTRAR CITAS
+// ==================================
+
+function mostrarCitas() {
+
+
+    const citas =
+        JSON.parse(
+            localStorage.getItem(
+                "citas"
+            )
+        ) || [];
+
+
+    const lista =
+        document.getElementById(
+            "listaCitas"
+        );
+
+
+    lista.innerHTML = "";
+
+
+    // SI NO HAY CITAS
+
+    if (citas.length === 0) {
+
+
+        lista.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="sin-citas">
+
+                    No hay citas registradas.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    // MOSTRAR TODAS LAS CITAS
+
+    citas.forEach(
+        function(cita) {
+
+
+            const fila =
+                document.createElement(
+                    "tr"
+                );
+
+
+            fila.innerHTML = `
+
+                <td>
+                    ${cita.nombre}
+                </td>
+
+                <td>
+                    ${cita.correo}
+                </td>
+
+                <td>
+                    ${cita.especialidad}
+                </td>
+
+                <td>
+                    ${cita.grupo}
+                </td>
+
+                <td>
+                    ${cita.motivo}
+                </td>
+
+                <td>
+                    ${cita.fecha}
+                </td>
+
+                <td>
+                    ${cita.hora}
+                </td>
+
+            `;
+
+
+            lista.appendChild(fila);
+
+        }
+    );
+
+}
+
+
+
+// ==================================
+// REGISTRAR OTRA CITA
+// ==================================
+
+function irARegistrar() {
+
+    mostrarPantalla(2);
+
+}
+
+
+
+// ==================================
+// CERRAR SESIÓN
+// ==================================
+
+function cerrarSesion() {
+
+
+    document
+        .getElementById(
+            "admin"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "password"
+        )
+        .value = "";
+
+
+    mostrarPantalla(1);
+
+}
+
+
+
+// ==================================
+// CARGAR CITAS AL INICIAR
+// ==================================
+
+mostrarCitas();
+
+</script>
+
+
+</body>
+
+</html>
